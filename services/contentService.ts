@@ -1,8 +1,8 @@
 import { ContentItem, ContentType } from '../types';
 import { INITIAL_ARTICLES, INITIAL_CASE_STUDIES } from '../constants';
 
-const ARTICLES_KEY = 'msadmin_articles';
-const CASE_STUDIES_KEY = 'msadmin_casestudies';
+const ARTICLES_KEY = 'msadmin_articles_v2';
+const CASE_STUDIES_KEY = 'msadmin_casestudies_v2';
 
 // Initialize LocalStorage if empty
 const initStorage = () => {

@@ -17,7 +17,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({ title, url }) => {
         Share:
       </span>
       <a
-        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
+        href={`https://www.linkedin.com/feed/?shareActive=true&text=${encodedTitle}%20${encodedUrl}`}
         target="_blank"
         rel="noopener noreferrer"
         className="p-2 rounded-full bg-gray-50 text-gray-400 hover:text-[#0077b5] hover:bg-blue-50 transition-all dark:bg-slate-800 dark:hover:bg-slate-700"

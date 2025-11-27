@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Server, ShieldCheck, Users, Cloud, Terminal, 
-  Smartphone, Layout, ArrowRight, Download 
+  Smartphone, Layout, ArrowRight, Download, Briefcase
 } from 'lucide-react';
 import { ContentService } from '../services/contentService';
 import { ContentStatus } from '../types';
@@ -29,41 +29,53 @@ const Home: React.FC = () => {
     <div>
       <SEO 
         title="Sayan Ghosh | Microsoft 365 Administrator" 
-        description="Modern Workplace Engineer specializing in Microsoft 365, Exchange Online, Intune, and Entra ID security. Identity-Driven, Security-Focused, Outcome-Obsessed."
+        description="Driving reliable, compliant, and secure Microsoft 365 operations at scale. Hands-on experience with Exchange, Teams, Azure AD, and Intune."
         url="https://www.microsoftadmin.in/"
       />
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950 pt-20 pb-24 lg:pt-32 lg:pb-32">
-        {/* Abstract shapes */}
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-blue-100 dark:bg-blue-900/10 rounded-full blur-3xl opacity-50"></div>
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 bg-emerald-100 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-50"></div>
+      
+      {/* Hero Section - Glass Card + Grid Pattern */}
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950 pt-16 pb-20">
+        
+        {/* Background Grid & ambient glows */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+          <div className="absolute left-1/2 top-0 -translate-x-1/2 -z-10 h-[500px] w-[500px] rounded-full bg-blue-500/20 blur-[120px] pointer-events-none"></div>
+          <div className="absolute right-0 bottom-0 -z-10 h-[300px] w-[300px] rounded-full bg-emerald-500/10 blur-[100px] pointer-events-none"></div>
+        </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-4xl mx-auto">
-            <span className="inline-block py-1 px-3 rounded-full bg-blue-100 text-ms-blue text-sm font-bold tracking-wide uppercase mb-6 dark:bg-blue-900/30 dark:text-blue-300">
-              Modern Workplace Engineer
-            </span>
-            <h1 className="text-4xl tracking-tight font-extrabold text-slate-900 dark:text-white sm:text-5xl md:text-7xl">
-              <span className="block mb-2">Secure. Automate.</span>
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-ms-blue to-blue-600 pb-2">
-                Optimize Microsoft 365.
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+           <div className="backdrop-blur-xl bg-white/60 dark:bg-slate-900/60 border border-white/50 dark:border-slate-700/50 shadow-2xl rounded-3xl p-8 md:p-14 lg:p-16 ring-1 ring-gray-900/5 text-center transform transition-all hover:scale-[1.01] duration-500">
+              
+              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-100/80 dark:bg-blue-900/40 text-ms-blue dark:text-blue-300 text-xs font-bold tracking-widest uppercase mb-8 border border-blue-200 dark:border-blue-800 shadow-sm">
+                 Microsoft 365 Administrator
               </span>
-            </h1>
-            <p className="mt-6 max-w-2xl mx-auto text-lg text-gray-600 dark:text-gray-300 md:text-xl leading-relaxed">
-              I am <span className="font-semibold text-slate-900 dark:text-white">Sayan Ghosh</span>. I help global enterprises build resilient, identity-driven cloud environments.
-              <br className="hidden md:inline" /> 4+ years of expertise in Exchange, Intune, and Entra ID.
-            </p>
-            
-            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link to="/case-studies" className="w-full sm:w-auto flex items-center justify-center px-8 py-4 border border-transparent text-base font-bold rounded-xl text-white bg-ms-blue hover:bg-blue-700 shadow-lg shadow-blue-500/30 hover:-translate-y-1 transition-all duration-200">
-                View My Work
-              </Link>
-              <button onClick={openResumeModal} className="w-full sm:w-auto flex items-center justify-center px-8 py-4 border border-gray-200 dark:border-slate-700 text-base font-bold rounded-xl text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm hover:shadow-md transition-all duration-200 group">
-                <Download className="w-5 h-5 mr-2 text-gray-400 group-hover:text-ms-blue transition-colors" />
-                Resume
-              </button>
-            </div>
-          </div>
+              
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.1] mb-8">
+                 Driving reliable, compliant, and secure <span className="text-transparent bg-clip-text bg-gradient-to-r from-ms-blue to-blue-600">Microsoft 365 operations</span> at scale.
+              </h1>
+              
+              <p className="max-w-3xl mx-auto text-lg md:text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-12 font-light">
+                 Hands-on experience running multi-region tenants with deep expertise in Exchange, Teams, Azure AD, Intune, PowerShell for scripting/automation, and advanced troubleshooting.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
+                 <Link 
+                   to="/case-studies" 
+                   className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-bold rounded-xl text-white bg-ms-blue hover:bg-blue-700 shadow-lg shadow-blue-500/25 hover:-translate-y-0.5 transition-all duration-200"
+                 >
+                   <Briefcase className="w-5 h-5 mr-2" />
+                   View Case Studies
+                 </Link>
+                 
+                 <button 
+                   onClick={openResumeModal} 
+                   className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 border border-gray-300 dark:border-slate-600 text-base font-bold rounded-xl text-slate-700 dark:text-slate-200 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-800 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                 >
+                   <Download className="w-5 h-5 mr-2" />
+                   Download Resume
+                 </button>
+              </div>
+           </div>
         </div>
       </section>
 

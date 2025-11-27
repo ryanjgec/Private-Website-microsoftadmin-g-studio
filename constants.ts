@@ -115,8 +115,8 @@ export const INITIAL_CASE_STUDIES: ContentItem[] = [
   {
     id: 'cs1',
     title: 'Managed 5,000+ mailboxes with advanced security',
-    slug: 'atlas-air-mailbox-security',
-    client: 'Atlas Air',
+    slug: 'cargo-airline-mailbox-security',
+    client: 'Global Cargo Airline',
     environment: '5,000+ Mailboxes, Hybrid Exchange',
     summary: 'Secured a large-scale hybrid environment against phishing and unauthorized access.',
     outcome: 'Reduced security incidents by 40% and improved uptime.',
@@ -135,27 +135,27 @@ Achieved a **99.9%** reduction in delivered phishing emails and standardized the
     tags: ['Security', 'Exchange', 'Defender'],
     status: ContentStatus.Published,
     date: '2023-08-20',
-    imageUrl: 'https://picsum.photos/seed/atlas/800/400'
+    imageUrl: 'https://picsum.photos/seed/cargo/800/400'
   },
   {
     id: 'cs2',
     title: 'Deployed Intune MDM for 1,000+ devices',
-    slug: 'jde-intune-deployment',
-    client: 'JDE',
+    slug: 'fmcg-intune-deployment',
+    client: 'Global FMCG Conglomerate',
     environment: '1,000+ iOS & Windows Devices',
     summary: 'Transitioned from legacy GPO management to modern cloud-native MDM with Intune.',
     outcome: 'Zero-touch provisioning achieved via Autopilot.',
-    content: '# JDE Intune Rollout\n\nFull transition to modern management...',
+    content: '# FMCG Intune Rollout\n\nFull transition to modern management...',
     tags: ['Intune', 'Autopilot', 'Windows 11'],
     status: ContentStatus.Published,
     date: '2023-05-15',
-    imageUrl: 'https://picsum.photos/seed/jde/800/400'
+    imageUrl: 'https://picsum.photos/seed/fmcg/800/400'
   },
   {
     id: 'cs3',
     title: 'Seamless tenant-to-tenant migration',
-    slug: 'jde-peets-migration',
-    client: 'JDE Peet’s',
+    slug: 'coffee-tea-company-migration',
+    client: 'Multi-National Coffee & Tea Company',
     environment: 'Merger & Acquisition Scenario',
     summary: 'Executed a complex identity and data migration following a corporate merger.',
     outcome: 'Day-1 access enabled for all migrated users with no data loss.',
@@ -163,6 +163,6 @@ Achieved a **99.9%** reduction in delivered phishing emails and standardized the
     tags: ['Migration', 'Entra ID', 'SharePoint'],
     status: ContentStatus.Published,
     date: '2023-09-01',
-    imageUrl: 'https://picsum.photos/seed/peets/800/400'
+    imageUrl: 'https://picsum.photos/seed/coffee/800/400'
   }
 ];
