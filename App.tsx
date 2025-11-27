@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AuthState, User } from './types';
+import { AuthState, User, ContentType } from './types';
 
 // Components
 import Layout from './components/Layout';
@@ -10,10 +10,11 @@ import ArticleDetail from './pages/ArticleDetail';
 import CaseStudies from './pages/CaseStudies';
 import CaseStudyDetail from './pages/CaseStudyDetail';
 import Contact from './pages/Contact';
-import Experience from './pages/Experience';
+import Experience from './pages/Experience'; // Used for the "About" page
 import Login from './pages/admin/Login';
 import Dashboard from './pages/admin/Dashboard';
 import Editor from './pages/admin/Editor';
+import ResumeModal from './components/ResumeModal';
 
 // Contexts
 export const ThemeContext = createContext({
@@ -29,6 +30,16 @@ export const AuthContext = createContext<{
   auth: { user: null, isAuthenticated: false },
   login: () => {},
   logout: () => {},
+});
+
+export const ResumeContext = createContext<{
+  isResumeModalOpen: boolean;
+  openResumeModal: () => void;
+  closeResumeModal: () => void;
+}>({
+  isResumeModalOpen: false,
+  openResumeModal: () => {},
+  closeResumeModal: () => {},
 });
 
 const ScrollToTop = () => {
@@ -94,29 +105,39 @@ const App: React.FC = () => {
     localStorage.removeItem('msadmin_auth');
   };
 
+  // Resume Modal State
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
+  const openResumeModal = () => setIsResumeModalOpen(true);
+  const closeResumeModal = () => setIsResumeModalOpen(false);
+
   return (
     <ThemeContext.Provider value={{ isDark, toggleTheme }}>
       <AuthContext.Provider value={{ auth, login, logout }}>
-        <HashRouter>
-          <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Layout><Home /></Layout>} />
-            <Route path="/experience" element={<Layout><Experience /></Layout>} />
-            <Route path="/articles" element={<Layout><Articles /></Layout>} />
-            <Route path="/articles/:slug" element={<Layout><ArticleDetail /></Layout>} />
-            <Route path="/case-studies" element={<Layout><CaseStudies /></Layout>} />
-            <Route path="/case-studies/:slug" element={<Layout><CaseStudyDetail /></Layout>} />
-            <Route path="/contact" element={<Layout><Contact /></Layout>} />
-            
-            {/* Admin Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/admin" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
-            <Route path="/admin/article/new" element={<ProtectedRoute><Layout><Editor type="ARTICLE" /></Layout></ProtectedRoute>} />
-            <Route path="/admin/article/edit/:id" element={<ProtectedRoute><Layout><Editor type="ARTICLE" /></Layout></ProtectedRoute>} />
-            <Route path="/admin/casestudy/new" element={<ProtectedRoute><Layout><Editor type="CASE_STUDY" /></Layout></ProtectedRoute>} />
-            <Route path="/admin/casestudy/edit/:id" element={<ProtectedRoute><Layout><Editor type="CASE_STUDY" /></Layout></ProtectedRoute>} />
-          </Routes>
-        </HashRouter>
+        <ResumeContext.Provider value={{ isResumeModalOpen, openResumeModal, closeResumeModal }}>
+          <HashRouter>
+            <ScrollToTop />
+            <ResumeModal />
+            <Routes>
+              <Route path="/" element={<Layout><Home /></Layout>} />
+              {/* Merged About & Experience Page */}
+              <Route path="/about" element={<Layout><Experience /></Layout>} />
+              
+              <Route path="/articles" element={<Layout><Articles /></Layout>} />
+              <Route path="/articles/:slug" element={<Layout><ArticleDetail /></Layout>} />
+              <Route path="/case-studies" element={<Layout><CaseStudies /></Layout>} />
+              <Route path="/case-studies/:slug" element={<Layout><CaseStudyDetail /></Layout>} />
+              <Route path="/contact" element={<Layout><Contact /></Layout>} />
+              
+              {/* Admin Routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/admin" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
+              <Route path="/admin/article/new" element={<ProtectedRoute><Layout><Editor type={ContentType.Article} /></Layout></ProtectedRoute>} />
+              <Route path="/admin/article/edit/:id" element={<ProtectedRoute><Layout><Editor type={ContentType.Article} /></Layout></ProtectedRoute>} />
+              <Route path="/admin/casestudy/new" element={<ProtectedRoute><Layout><Editor type={ContentType.CaseStudy} /></Layout></ProtectedRoute>} />
+              <Route path="/admin/casestudy/edit/:id" element={<ProtectedRoute><Layout><Editor type={ContentType.CaseStudy} /></Layout></ProtectedRoute>} />
+            </Routes>
+          </HashRouter>
+        </ResumeContext.Provider>
       </AuthContext.Provider>
     </ThemeContext.Provider>
   );

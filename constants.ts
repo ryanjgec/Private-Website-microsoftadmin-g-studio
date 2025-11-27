@@ -1,5 +1,58 @@
 import { ContentItem, ContentType, ContentStatus } from './types';
 
+export const RESUME_CONTENT = `Sayan Ghosh
+Microsoft 365 Administrator
+Kolkata, India || https://infra365.online
++91-7001164440 || sayan@microsoftadmin.in
+
+PROFESSIONAL SUMMARY
+I am an experienced Microsoft 365 architect with over 4 years at Accenture, specializing in managing multiple global O365/M365 environments supporting 15,000-60,000 users across multiple regions. I have strong expertise in Exchange Online, Intune, Teams, OneDrive, and Azure AD, allowing me to deliver excellent results in complex cloud infrastructures.
+I use PowerShell automation to streamline operations, reducing manual workload and enhancing service reliability. My experience in implementing security measures—including Conditional Access, Multi-Factor Authentication (MFA), and Microsoft Defender for Office 365—ensures robust protection and compliance.
+With a proven track record in advanced troubleshooting and escalation resolution, I drive service improvements that address challenges and promote long-term enhancements. My commitment to ITIL compliance and digital efficiency has consistently strengthened tenant security and operational excellence.
+
+CORE SKILLS
+Microsoft 365 & Cloud Infrastructure:
+Exchange Online & Hybrid, Teams Administration (Voice, Auto Attendants, Call Queues, Routing, Rooms, Policies), Intune & Endpoint Management (MDM/MAM, BYOD, compliance, app deployment, endpoint security).
+
+Identity & Security:
+Azure AD / Entra ID (user/group management, hybrid sync), IAM (Conditional Access, MFA, SSO, app registrations, RBAC), Defender for Office 365 (threat protection, Secure Score, SPF/DKIM/DMARC), Data Governance & Compliance (DLP, sensitivity labels, eDiscovery, retention).
+
+Automation, Collaboration & AI Tools:
+PowerShell scripting and automation, ITIL incident/problem/change management with ServiceNow and Jira, advanced Confluence site administration with a focus on governance, access controls, and content lifecycle management. Proficient use of AI assistants—Copilot, ChatGPT, Perplexity, and Claude Gemini—for enhancing efficiency and technical support.
+
+PROFESSIONAL EXPERIENCE
+Accenture – Infra Managed Services Analyst (Microsoft 365 Administrator)
+Kolkata, India | Dec 2021 – Present
+• Led the administration of global Microsoft 365 tenants and Exchange hybrid environments supporting up to 60,000 users.
+• Automated Group creations, mailboxes provisioning, Teams Enterprise Voice assignments, using PowerShell, and reducing manual workload by 25%.
+• Achieved SLA-backed 99.9% service uptime; managed mailbox migrations and Azure AD Connect synchronization.
+• Implemented Conditional Access, MFA, app registrations, and Defender for Office 365 to strengthen security posture.
+• Configured and enforced email authentication (SPF, DKIM, DMARC) and compliance policies across domains.
+• Administered Intune MDM/MAM for corporate and BYOD devices, increasing device compliance by 30%.
+• Managed Teams Enterprise Voice workflows, including complex Auto Attendants, Call Queues, and Direct Routing.
+• Resolved 150+ service requests/incidents monthly through ServiceNow and Jira.
+• Administered Confluence for a cross-functional project with responsibilities including site governance, role-based access management, and content lifecycle optimization, supporting cross-functional teams and knowledge sharing.
+• Consistently apply AI tools such as Copilot, ChatGPT, Perplexity, and Claude Gemini to streamline operational workflows, accelerate troubleshooting, and enhance reporting accuracy.
+
+CERTIFICATIONS
+• Microsoft 365 Certified: Fundamentals (MS-900) - June 2023
+• Microsoft Certified: Azure Fundamentals (AZ-900) - June 2025
+• Atlassian Certified: Confluence Essentials (ACA-920) - May 2025
+• Microsoft 365 Certified: Administrator Expert (MS-102) – Oct 2025
+
+EDUCATION
+B.Tech in Information Technology
+Jalpaiguri Govt. Engineering College | 2016 - 2019
+
+Diploma in Computer Science & Technology
+Siliguri Govt. Polytechnic | 2013 - 2016
+
+ADDITIONAL INFORMATION
+• Languages: English (Fluent), Hindi (Fluent), Bengali (Native)
+• Availability: Flexible for global time zones, experienced in 24/7 on-call support.
+• Professional Development: Active member of the Microsoft & Atlassian community, regularly contributing to technical forums and staying current with Microsoft & Confluence product updates.
+`;
+
 export const INITIAL_ARTICLES: ContentItem[] = [
   {
     id: '1',

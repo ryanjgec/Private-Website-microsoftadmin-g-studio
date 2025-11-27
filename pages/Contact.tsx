@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Mail, Linkedin, MapPin, Phone } from 'lucide-react';
+import { ResumeContext } from '../App';
 
 const Contact: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
+  const { openResumeModal } = useContext(ResumeContext);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,9 +57,12 @@ const Contact: React.FC = () => {
                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                   I am currently serving notice and available for immediate interviews.
                 </p>
-                <a href="#" className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-ms-blue hover:bg-blue-700 shadow-sm">
+                <button 
+                  onClick={openResumeModal}
+                  className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-ms-blue hover:bg-blue-700 shadow-sm"
+                >
                   Download Resume
-                </a>
+                </button>
              </div>
           </div>
 

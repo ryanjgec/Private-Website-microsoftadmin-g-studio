@@ -1,11 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ThemeContext, AuthContext } from '../App';
+import { ThemeContext, AuthContext, ResumeContext } from '../App';
 import { Menu, X, Sun, Moon, Shield, Linkedin, Mail, LogOut, LayoutDashboard } from 'lucide-react';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isDark, toggleTheme } = useContext(ThemeContext);
   const { auth, logout } = useContext(AuthContext);
+  const { openResumeModal } = useContext(ResumeContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -17,8 +18,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'About', path: '/#about' }, // Anchor link handling might need tweaking in real app
-    { name: 'Experience', path: '/experience' },
+    { name: 'About', path: '/about' }, 
     { name: 'Articles', path: '/articles' },
     { name: 'Case Studies', path: '/case-studies' },
     { name: 'Contact', path: '/contact' },
@@ -177,7 +177,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               <ul className="space-y-2">
                 <li><Link to="/" className="text-gray-600 dark:text-gray-400 hover:text-ms-blue">Home</Link></li>
                 <li><Link to="/about" className="text-gray-600 dark:text-gray-400 hover:text-ms-blue">About</Link></li>
-                <li><Link to="/experience" className="text-gray-600 dark:text-gray-400 hover:text-ms-blue">Experience</Link></li>
+                <li><Link to="/articles" className="text-gray-600 dark:text-gray-400 hover:text-ms-blue">Articles</Link></li>
                 <li><Link to="/contact" className="text-gray-600 dark:text-gray-400 hover:text-ms-blue">Contact</Link></li>
               </ul>
             </div>
@@ -185,9 +185,13 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <div>
               <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-4">Resources</h3>
               <ul className="space-y-2">
-                <li><Link to="/articles" className="text-gray-600 dark:text-gray-400 hover:text-ms-blue">Knowledge Base</Link></li>
+                <li><Link to="/articles" className="text-gray-600 dark:text-gray-400 hover:text-ms-blue">Articles</Link></li>
                 <li><Link to="/case-studies" className="text-gray-600 dark:text-gray-400 hover:text-ms-blue">Case Studies</Link></li>
-                <li><a href="#" className="text-gray-600 dark:text-gray-400 hover:text-ms-blue">Download Resume</a></li>
+                <li>
+                  <button onClick={openResumeModal} className="text-gray-600 dark:text-gray-400 hover:text-ms-blue text-left">
+                    Download Resume
+                  </button>
+                </li>
               </ul>
             </div>
           </div>

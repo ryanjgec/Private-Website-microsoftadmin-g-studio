@@ -3,6 +3,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { ArrowLeft, Calendar, Tag } from 'lucide-react';
 import { ContentService } from '../services/contentService';
+import SEO from '../components/SEO';
 
 const ArticleDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -12,8 +13,17 @@ const ArticleDetail: React.FC = () => {
     return <Navigate to="/articles" replace />;
   }
 
+  const articleUrl = `https://www.microsoftadmin.in/#/articles/${article.slug}`;
+
   return (
     <div className="bg-white dark:bg-slate-900 min-h-screen py-12">
+      <SEO 
+        title={`${article.title} | Sayan Ghosh`} 
+        description={article.summary} 
+        image={article.imageUrl}
+        url={articleUrl}
+        type="article"
+      />
       <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link to="/articles" className="inline-flex items-center text-sm text-gray-500 hover:text-ms-blue mb-8">
           <ArrowLeft className="w-4 h-4 mr-1" /> Back to Articles

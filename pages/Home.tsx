@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Server, ShieldCheck, Users, Cloud, Terminal, 
@@ -6,10 +6,13 @@ import {
 } from 'lucide-react';
 import { ContentService } from '../services/contentService';
 import { ContentStatus } from '../types';
+import { ResumeContext } from '../App';
+import SEO from '../components/SEO';
 
 const Home: React.FC = () => {
   const articles = ContentService.getArticles().filter(a => a.status === ContentStatus.Published).slice(0, 3);
   const caseStudies = ContentService.getCaseStudies().filter(c => c.status === ContentStatus.Published).slice(0, 3);
+  const { openResumeModal } = useContext(ResumeContext);
 
   const expertise = [
     { icon: <Layout className="w-6 h-6" />, title: 'Microsoft 365 Administration', desc: 'Holistic tenant management & optimization' },
@@ -24,6 +27,11 @@ const Home: React.FC = () => {
 
   return (
     <div>
+      <SEO 
+        title="Sayan Ghosh | Microsoft 365 Administrator" 
+        description="Modern Workplace Engineer specializing in Microsoft 365, Exchange Online, Intune, and Entra ID security. Identity-Driven, Security-Focused, Outcome-Obsessed."
+        url="https://www.microsoftadmin.in/"
+      />
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-white dark:bg-slate-900 pt-16 pb-20 lg:pt-32 lg:pb-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -38,8 +46,8 @@ const Home: React.FC = () => {
             </p>
             <div className="mt-10 sm:flex sm:justify-center gap-4">
               <div className="rounded-md shadow">
-                <Link to="/experience" className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-ms-blue hover:bg-blue-700 md:py-4 md:text-lg transition-all hover:shadow-lg">
-                  View Experience
+                <Link to="/about" className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-ms-blue hover:bg-blue-700 md:py-4 md:text-lg transition-all hover:shadow-lg">
+                  More About Me
                 </Link>
               </div>
               <div className="mt-3 sm:mt-0 sm:ml-3">
@@ -66,19 +74,19 @@ const Home: React.FC = () => {
               </p>
             </div>
             <div className="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">
-              <a
-                href="#"
+              <button
+                onClick={openResumeModal}
                 className="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-ms-blue bg-white hover:bg-blue-50"
               >
                 Download Resume
-              </a>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* About / Expertise Grid */}
-      <section id="about" className="py-20 bg-gray-50 dark:bg-slate-950">
+      {/* Expertise Grid */}
+      <section className="py-20 bg-gray-50 dark:bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-base text-ms-blue font-semibold tracking-wide uppercase">Core Expertise</h2>
@@ -103,7 +111,7 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-end mb-12">
             <div>
-              <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">Knowledge Base</h2>
+              <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">Articles</h2>
               <p className="mt-2 text-gray-500 dark:text-gray-400">Technical deep dives and guides.</p>
             </div>
             <Link to="/articles" className="hidden sm:flex items-center text-ms-blue hover:text-blue-700 font-medium">

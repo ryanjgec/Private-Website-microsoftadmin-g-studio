@@ -3,6 +3,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { ContentService } from '../services/contentService';
+import SEO from '../components/SEO';
 
 const CaseStudyDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -12,8 +13,17 @@ const CaseStudyDetail: React.FC = () => {
     return <Navigate to="/case-studies" replace />;
   }
 
+  const studyUrl = `https://www.microsoftadmin.in/#/case-studies/${study.slug}`;
+
   return (
     <div className="bg-white dark:bg-slate-900 min-h-screen py-12">
+      <SEO 
+        title={`${study.title} | Case Study`} 
+        description={study.summary} 
+        image={study.imageUrl}
+        url={studyUrl}
+        type="article"
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link to="/case-studies" className="inline-flex items-center text-sm text-gray-500 hover:text-ms-blue mb-8">
           <ArrowLeft className="w-4 h-4 mr-1" /> Back to Case Studies

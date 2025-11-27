@@ -13,11 +13,11 @@ const Login: React.FC = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // Mock Login Logic
-    if (email === 'admin@microsoftadmin.in' && password === 'admin123') {
+    if (email === 'sayan@microsoftadmin.in' && password === 'admin123') {
       login({ name: 'Sayan Ghosh', email, role: 'admin' });
       navigate('/admin');
     } else {
-      setError('Invalid credentials. Try admin@microsoftadmin.in / admin123');
+      setError('Invalid credentials.');
     }
   };
 
@@ -53,7 +53,7 @@ const Login: React.FC = () => {
             </div>
           </form>
           <div className="mt-4 text-center text-xs text-gray-400">
-             Hint: admin@microsoftadmin.in / admin123
+             Hint: sayan@microsoftadmin.in / admin123
           </div>
         </div>
       </div>

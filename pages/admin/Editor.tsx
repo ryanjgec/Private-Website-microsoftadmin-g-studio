@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ContentType, ContentItem, ContentStatus } from '../../types';
 import { ContentService } from '../../services/contentService';
-import { ArrowLeft, Save } from 'lucide-react';
+import { 
+  ArrowLeft, Save, Upload, Image as ImageIcon,
+  Bold, Italic, List, ListOrdered, Code, Heading, Quote, Link as LinkIcon
+} from 'lucide-react';
 
 interface EditorProps {
   type: ContentType;
@@ -13,6 +16,11 @@ const Editor: React.FC<EditorProps> = ({ type }) => {
   const navigate = useNavigate();
   const isEdit = !!id;
   const isCaseStudy = type === ContentType.CaseStudy;
+
+  // Refs for file inputs and textarea
+  const coverImageInputRef = useRef<HTMLInputElement>(null);
+  const contentImageInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [formData, setFormData] = useState<ContentItem>({
     id: crypto.randomUUID(),
@@ -80,6 +88,64 @@ const Editor: React.FC<EditorProps> = ({ type }) => {
     navigate('/admin');
   };
 
+  // --- Formatting Helpers ---
+  const insertFormat = (prefix: string, suffix: string = '') => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = formData.content;
+    const before = text.substring(0, start);
+    const selected = text.substring(start, end);
+    const after = text.substring(end);
+
+    const newContent = `${before}${prefix}${selected}${suffix}${after}`;
+    
+    setFormData(prev => ({ ...prev, content: newContent }));
+
+    // Restore focus and cursor selection
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + prefix.length, end + prefix.length);
+    }, 0);
+  };
+
+  // Image Upload Handlers
+  const handleCoverImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, imageUrl: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleContentImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const textarea = textareaRef.current;
+    // Capture cursor position immediately to insert image where user was typing
+    const cursorPosition = textarea ? textarea.selectionStart : formData.content.length;
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Append Markdown image syntax to content at cursor position
+        const markdownImage = `\n![${file.name}](${reader.result})\n`;
+        
+        setFormData(prev => {
+          const text = prev.content;
+          const before = text.substring(0, cursorPosition);
+          const after = text.substring(cursorPosition);
+          return { ...prev, content: `${before}${markdownImage}${after}` };
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-950 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -105,6 +171,41 @@ const Editor: React.FC<EditorProps> = ({ type }) => {
               </div>
            </div>
 
+           {/* Cover Image Upload */}
+           <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Cover Image URL</label>
+              <div className="mt-1 flex rounded-md shadow-sm">
+                <input 
+                  type="text" 
+                  name="imageUrl" 
+                  value={formData.imageUrl} 
+                  onChange={handleChange} 
+                  className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-l-md border-gray-300 focus:ring-ms-blue focus:border-ms-blue dark:bg-slate-800 dark:border-slate-700 dark:text-white sm:text-sm" 
+                  placeholder="https://..."
+                />
+                <input 
+                  type="file" 
+                  ref={coverImageInputRef} 
+                  className="hidden" 
+                  accept="image/*" 
+                  onChange={handleCoverImageUpload} 
+                />
+                <button
+                  type="button"
+                  onClick={() => coverImageInputRef.current?.click()}
+                  className="inline-flex items-center px-3 py-2 border border-l-0 border-gray-300 rounded-r-md bg-gray-50 hover:bg-gray-100 text-gray-700 text-sm font-medium dark:bg-slate-700 dark:border-slate-600 dark:text-gray-200 dark:hover:bg-slate-600"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Upload
+                </button>
+              </div>
+              {formData.imageUrl && formData.imageUrl.startsWith('data:') && (
+                 <p className="mt-1 text-xs text-yellow-600 dark:text-yellow-400">
+                    * Using base64 encoded image. Large images may affect performance.
+                 </p>
+              )}
+           </div>
+
            {isCaseStudy && (
              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 bg-gray-50 dark:bg-slate-800 rounded-md">
                 <div>
@@ -127,9 +228,68 @@ const Editor: React.FC<EditorProps> = ({ type }) => {
              <textarea name="summary" rows={3} required value={formData.summary} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-ms-blue focus:ring-ms-blue dark:bg-slate-800 dark:border-slate-700 dark:text-white py-2 px-3" />
            </div>
 
+           {/* Enhanced Markdown Editor */}
            <div>
-             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Content (Markdown Supported)</label>
-             <textarea name="content" rows={12} required value={formData.content} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-ms-blue focus:ring-ms-blue dark:bg-slate-800 dark:border-slate-700 dark:text-white font-mono text-sm py-2 px-3" />
+             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Content (Markdown)</label>
+             
+             {/* Toolbar */}
+             <div className="flex flex-wrap items-center gap-1 p-2 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 border-b-0 rounded-t-md">
+                <button type="button" onClick={() => insertFormat('**', '**')} className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300" title="Bold">
+                   <Bold size={16} />
+                </button>
+                <button type="button" onClick={() => insertFormat('*', '*')} className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300" title="Italic">
+                   <Italic size={16} />
+                </button>
+                <div className="w-px h-6 bg-gray-300 dark:bg-slate-600 mx-1"></div>
+                <button type="button" onClick={() => insertFormat('\n## ')} className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300" title="Heading 2">
+                   <Heading size={16} />
+                </button>
+                <button type="button" onClick={() => insertFormat('\n> ')} className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300" title="Quote">
+                   <Quote size={16} />
+                </button>
+                <button type="button" onClick={() => insertFormat('\n- ')} className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300" title="Bulleted List">
+                   <List size={16} />
+                </button>
+                <button type="button" onClick={() => insertFormat('\n1. ')} className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300" title="Numbered List">
+                   <ListOrdered size={16} />
+                </button>
+                <div className="w-px h-6 bg-gray-300 dark:bg-slate-600 mx-1"></div>
+                <button type="button" onClick={() => insertFormat('[', '](url)')} className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300" title="Link">
+                   <LinkIcon size={16} />
+                </button>
+                <button type="button" onClick={() => insertFormat('\n```\n', '\n```\n')} className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300" title="Code Block">
+                   <Code size={16} />
+                </button>
+                
+                <div className="flex-grow"></div>
+                
+                {/* Image Upload in Toolbar */}
+                <input 
+                  type="file" 
+                  ref={contentImageInputRef} 
+                  className="hidden" 
+                  accept="image/*" 
+                  onChange={handleContentImageUpload} 
+                />
+                <button
+                  type="button"
+                  onClick={() => contentImageInputRef.current?.click()}
+                  className="flex items-center gap-1 px-2 py-1.5 rounded bg-white hover:bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-gray-200 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 text-xs font-medium"
+                >
+                  <ImageIcon size={14} />
+                  Insert Image
+                </button>
+             </div>
+
+             <textarea 
+               ref={textareaRef}
+               name="content" 
+               rows={15} 
+               required 
+               value={formData.content} 
+               onChange={handleChange} 
+               className="block w-full rounded-b-md rounded-t-none border-gray-300 shadow-sm focus:border-ms-blue focus:ring-ms-blue dark:bg-slate-900 dark:border-slate-700 dark:text-white font-mono text-sm py-2 px-3" 
+             />
            </div>
 
            <div>
