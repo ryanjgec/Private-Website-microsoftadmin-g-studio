@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { ContentService } from '../services/contentService';
 import SEO from '../components/SEO';
+import ShareButtons from '../components/ShareButtons';
 
 const CaseStudyDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -36,6 +37,11 @@ const CaseStudyDetail: React.FC = () => {
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-6">
             {study.title}
           </h1>
+          
+          <div className="flex justify-center mb-8">
+             <ShareButtons title={study.title} url={studyUrl} />
+          </div>
+
           <div className="flex flex-col sm:flex-row justify-center gap-6 text-left max-w-2xl mx-auto bg-gray-50 dark:bg-slate-800 p-6 rounded-lg">
              <div className="flex-1">
                 <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Environment</p>

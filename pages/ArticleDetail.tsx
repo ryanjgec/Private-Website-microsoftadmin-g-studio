@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import { ArrowLeft, Calendar, Tag } from 'lucide-react';
 import { ContentService } from '../services/contentService';
 import SEO from '../components/SEO';
+import ShareButtons from '../components/ShareButtons';
 
 const ArticleDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -40,9 +41,13 @@ const ArticleDetail: React.FC = () => {
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">
             {article.title}
           </h1>
-          <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm">
-            <Calendar className="w-4 h-4 mr-2" />
-            <time>{article.date}</time>
+          
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-gray-100 dark:border-slate-800">
+            <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm">
+              <Calendar className="w-4 h-4 mr-2" />
+              <time>{article.date}</time>
+            </div>
+            <ShareButtons title={article.title} url={articleUrl} />
           </div>
         </header>
 

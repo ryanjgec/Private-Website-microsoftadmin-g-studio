@@ -163,10 +163,10 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 Identity-Driven, Security-Focused, Outcome-Obsessed.
               </p>
               <div className="flex space-x-4">
-                <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="text-gray-400 hover:text-ms-blue transition-colors">
+                <a href="https://www.linkedin.com/in/sayankghosh/" target="_blank" rel="noreferrer" className="text-gray-400 hover:text-ms-blue transition-colors">
                   <Linkedin size={24} />
                 </a>
-                <a href="mailto:contact@microsoftadmin.in" className="text-gray-400 hover:text-ms-blue transition-colors">
+                <a href="mailto:sayan@microsoftadmin.in" className="text-gray-400 hover:text-ms-blue transition-colors">
                   <Mail size={24} />
                 </a>
               </div>
