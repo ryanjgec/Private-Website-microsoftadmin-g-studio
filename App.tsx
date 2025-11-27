@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthState, User, ContentType } from './types';
@@ -11,6 +12,7 @@ import CaseStudies from './pages/CaseStudies';
 import CaseStudyDetail from './pages/CaseStudyDetail';
 import Contact from './pages/Contact';
 import Experience from './pages/Experience'; // Used for the "About" page
+import Legal from './pages/Legal';
 import Login from './pages/admin/Login';
 import Dashboard from './pages/admin/Dashboard';
 import Editor from './pages/admin/Editor';
@@ -127,6 +129,7 @@ const App: React.FC = () => {
               <Route path="/case-studies" element={<Layout><CaseStudies /></Layout>} />
               <Route path="/case-studies/:slug" element={<Layout><CaseStudyDetail /></Layout>} />
               <Route path="/contact" element={<Layout><Contact /></Layout>} />
+              <Route path="/legal" element={<Layout><Legal /></Layout>} />
               
               {/* Admin Routes */}
               <Route path="/login" element={<Login />} />
