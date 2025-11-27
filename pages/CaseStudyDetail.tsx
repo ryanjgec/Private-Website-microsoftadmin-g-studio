@@ -1,23 +1,66 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { ContentService } from '../services/contentService';
+import { ContentItem } from '../types';
 import SEO from '../components/SEO';
 import ShareButtons from '../components/ShareButtons';
 
 const CaseStudyDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const study = slug ? ContentService.getCaseStudyBySlug(slug) : undefined;
+  const [study, setStudy] = useState<ContentItem | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    if (study) {
-      ContentService.trackPageView();
-    }
-  }, [study]);
+    const timer = setTimeout(() => {
+        const found = slug ? ContentService.getCaseStudyBySlug(slug) : undefined;
+        if (found) {
+            setStudy(found);
+            ContentService.trackPageView();
+        } else {
+            setNotFound(true);
+        }
+        setLoading(false);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [slug]);
 
-  if (!study) {
+  if (loading) {
+      return (
+        <div className="bg-white dark:bg-slate-900 min-h-screen py-12">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="h-4 w-32 bg-gray-200 dark:bg-slate-800 animate-pulse rounded mb-8" />
+            
+            <header className="mb-10 text-center flex flex-col items-center">
+              <div className="h-6 w-40 bg-gray-200 dark:bg-slate-800 animate-pulse rounded-full mb-4" />
+              <div className="h-10 w-3/4 bg-gray-200 dark:bg-slate-800 animate-pulse rounded mb-4" />
+              <div className="h-10 w-1/2 bg-gray-200 dark:bg-slate-800 animate-pulse rounded mb-6" />
+              
+              <div className="flex gap-4 mb-8">
+                 <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-slate-800 animate-pulse" />
+                 <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-slate-800 animate-pulse" />
+              </div>
+    
+              <div className="w-full max-w-2xl bg-gray-200 dark:bg-slate-800 animate-pulse h-24 rounded-xl" />
+            </header>
+    
+            <div className="space-y-4">
+               <div className="h-4 w-full bg-gray-200 dark:bg-slate-800 animate-pulse rounded" />
+               <div className="h-4 w-full bg-gray-200 dark:bg-slate-800 animate-pulse rounded" />
+               <div className="h-4 w-5/6 bg-gray-200 dark:bg-slate-800 animate-pulse rounded" />
+               <div className="h-4 w-4/6 bg-gray-200 dark:bg-slate-800 animate-pulse rounded" />
+            </div>
+
+            <div className="mt-12 h-24 bg-gray-200 dark:bg-slate-800 animate-pulse rounded-lg" />
+          </div>
+        </div>
+      );
+  }
+
+  if (notFound || !study) {
     return <Navigate to="/case-studies" replace />;
   }
 

@@ -1,22 +1,32 @@
 
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Server, ShieldCheck, Users, Cloud, Terminal, 
   Smartphone, Layout, ArrowRight, Download, Briefcase
 } from 'lucide-react';
 import { ContentService } from '../services/contentService';
-import { ContentStatus } from '../types';
+import { ContentStatus, ContentItem } from '../types';
 import { ResumeContext } from '../App';
 import SEO from '../components/SEO';
 
 const Home: React.FC = () => {
-  const articles = ContentService.getArticles().filter(a => a.status === ContentStatus.Published).slice(0, 3);
-  const caseStudies = ContentService.getCaseStudies().filter(c => c.status === ContentStatus.Published).slice(0, 3);
+  const [featuredArticles, setFeaturedArticles] = useState<ContentItem[]>([]);
+  const [featuredCaseStudies, setFeaturedCaseStudies] = useState<ContentItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const { openResumeModal } = useContext(ResumeContext);
 
   useEffect(() => {
     ContentService.trackPageView();
+    
+    // Simulate data fetching delay for UX
+    const timer = setTimeout(() => {
+        setFeaturedArticles(ContentService.getArticles().filter(a => a.status === ContentStatus.Published).slice(0, 3));
+        setFeaturedCaseStudies(ContentService.getCaseStudies().filter(c => c.status === ContentStatus.Published).slice(0, 3));
+        setLoading(false);
+    }, 800);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const expertise = [
@@ -136,26 +146,44 @@ const Home: React.FC = () => {
           </div>
           
           <div className="grid gap-8 md:grid-cols-3">
-            {articles.map((article) => (
-              <Link key={article.id} to={`/articles/${article.slug}`} className="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-blue-900/5 transition-all duration-300 hover:-translate-y-1">
-                <div className="flex-shrink-0 h-52 w-full overflow-hidden">
-                  <img className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" src={article.imageUrl} alt={article.title} />
-                </div>
-                <div className="flex-1 p-8 flex flex-col justify-between">
-                  <div className="flex-1">
-                    <p className="text-xs font-bold text-ms-blue uppercase tracking-wide mb-3">
-                      {article.tags[0]}
-                    </p>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-ms-blue transition-colors">
-                      {article.title}
-                    </h3>
-                    <p className="text-base text-slate-700 dark:text-gray-400 line-clamp-3 leading-relaxed font-medium dark:font-normal">
-                      {article.summary}
-                    </p>
+            {loading ? (
+              // Loading Skeletons for Articles
+              [1, 2, 3].map((i) => (
+                <div key={i} className="flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm h-full">
+                  <div className="h-52 w-full bg-gray-200 dark:bg-slate-700 animate-pulse" />
+                  <div className="flex-1 p-8 flex flex-col space-y-4">
+                     <div className="h-4 w-20 bg-gray-200 dark:bg-slate-700 animate-pulse rounded" />
+                     <div className="h-8 w-full bg-gray-200 dark:bg-slate-700 animate-pulse rounded" />
+                     <div className="space-y-2 flex-1">
+                        <div className="h-4 w-full bg-gray-200 dark:bg-slate-700 animate-pulse rounded" />
+                        <div className="h-4 w-5/6 bg-gray-200 dark:bg-slate-700 animate-pulse rounded" />
+                        <div className="h-4 w-4/6 bg-gray-200 dark:bg-slate-700 animate-pulse rounded" />
+                     </div>
                   </div>
                 </div>
-              </Link>
-            ))}
+              ))
+            ) : (
+              featuredArticles.map((article) => (
+                <Link key={article.id} to={`/articles/${article.slug}`} className="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-blue-900/5 transition-all duration-300 hover:-translate-y-1">
+                  <div className="flex-shrink-0 h-52 w-full overflow-hidden">
+                    <img className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" src={article.imageUrl} alt={article.title} />
+                  </div>
+                  <div className="flex-1 p-8 flex flex-col justify-between">
+                    <div className="flex-1">
+                      <p className="text-xs font-bold text-ms-blue uppercase tracking-wide mb-3">
+                        {article.tags[0]}
+                      </p>
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-ms-blue transition-colors">
+                        {article.title}
+                      </h3>
+                      <p className="text-base text-slate-700 dark:text-gray-400 line-clamp-3 leading-relaxed font-medium dark:font-normal">
+                        {article.summary}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))
+            )}
           </div>
           <div className="mt-8 text-center sm:hidden">
             <Link to="/articles" className="inline-flex items-center text-ms-blue font-bold">
@@ -179,30 +207,52 @@ const Home: React.FC = () => {
           </div>
           
           <div className="grid gap-8 md:grid-cols-3">
-            {caseStudies.map((study) => (
-              <Link key={study.id} to={`/case-studies/${study.slug}`} className="relative group bg-gray-50 dark:bg-slate-900 p-8 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                <div className="absolute top-6 right-6">
-                   <div className="bg-white dark:bg-slate-800 text-ms-blue text-xs font-bold px-3 py-1.5 rounded-full shadow-sm border border-gray-100 dark:border-slate-700">
-                      {study.client}
-                   </div>
-                </div>
-                <div className="mt-8 mb-4">
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-ms-blue transition-colors">
-                    {study.title}
-                  </h3>
-                  <div className="inline-block px-3 py-1 rounded-md bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 text-xs font-bold">
-                    {study.environment}
+            {loading ? (
+                // Loading Skeletons for Case Studies
+                [1, 2, 3].map((i) => (
+                  <div key={i} className="bg-gray-50 dark:bg-slate-900 p-8 rounded-2xl border border-gray-100 dark:border-slate-800 h-full animate-pulse">
+                     <div className="flex justify-end mb-6">
+                        <div className="h-6 w-24 bg-gray-200 dark:bg-slate-800 rounded-full" />
+                     </div>
+                     <div className="space-y-4 mb-6">
+                        <div className="h-8 w-3/4 bg-gray-200 dark:bg-slate-800 rounded" />
+                        <div className="h-6 w-1/3 bg-gray-200 dark:bg-slate-800 rounded" />
+                     </div>
+                     <div className="space-y-2 mb-6">
+                        <div className="h-4 w-full bg-gray-200 dark:bg-slate-800 rounded" />
+                        <div className="h-4 w-5/6 bg-gray-200 dark:bg-slate-800 rounded" />
+                     </div>
+                     <div className="border-t border-gray-200 dark:border-slate-800 pt-6">
+                        <div className="h-5 w-1/2 bg-gray-200 dark:bg-slate-800 rounded" />
+                     </div>
                   </div>
-                </div>
-                <p className="text-slate-700 dark:text-gray-400 mb-6 leading-relaxed font-medium dark:font-normal">
-                  {study.summary}
-                </p>
-                <div className="pt-6 border-t border-gray-200 dark:border-slate-800 flex items-center text-emerald-700 dark:text-emerald-400 font-bold text-sm">
-                   <ShieldCheck className="w-4 h-4 mr-2" />
-                   Outcome: {study.outcome}
-                </div>
-              </Link>
-            ))}
+                ))
+            ) : (
+                featuredCaseStudies.map((study) => (
+                <Link key={study.id} to={`/case-studies/${study.slug}`} className="relative group bg-gray-50 dark:bg-slate-900 p-8 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div className="absolute top-6 right-6">
+                    <div className="bg-white dark:bg-slate-800 text-ms-blue text-xs font-bold px-3 py-1.5 rounded-full shadow-sm border border-gray-100 dark:border-slate-700">
+                        {study.client}
+                    </div>
+                    </div>
+                    <div className="mt-8 mb-4">
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-ms-blue transition-colors">
+                        {study.title}
+                    </h3>
+                    <div className="inline-block px-3 py-1 rounded-md bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 text-xs font-bold">
+                        {study.environment}
+                    </div>
+                    </div>
+                    <p className="text-slate-700 dark:text-gray-400 mb-6 leading-relaxed font-medium dark:font-normal">
+                    {study.summary}
+                    </p>
+                    <div className="pt-6 border-t border-gray-200 dark:border-slate-800 flex items-center text-emerald-700 dark:text-emerald-400 font-bold text-sm">
+                    <ShieldCheck className="w-4 h-4 mr-2" />
+                    Outcome: {study.outcome}
+                    </div>
+                </Link>
+                ))
+            )}
           </div>
           <div className="mt-8 text-center sm:hidden">
             <Link to="/case-studies" className="inline-flex items-center text-ms-blue font-bold">

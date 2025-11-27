@@ -19,7 +19,7 @@ const Dashboard: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('active');
   const navigate = useNavigate();
 
-  const loadData = (delay = 400) => {
+  const loadData = (delay = 800) => {
     // We only set loading true on initial load, not on background refreshes
     if (articles.length === 0) setLoading(true);
     
@@ -83,17 +83,6 @@ const Dashboard: React.FC = () => {
       }
   };
 
-  if (loading) {
-      return (
-          <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
-              <div className="flex flex-col items-center">
-                <RefreshCw className="w-8 h-8 text-ms-blue animate-spin mb-4" />
-                <p className="text-gray-500 dark:text-gray-400 font-medium">Synchronizing...</p>
-              </div>
-          </div>
-      );
-  }
-
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -122,68 +111,57 @@ const Dashboard: React.FC = () => {
                         {trashItems.length > 0 && <span className="bg-red-100 text-red-800 dark:bg-red-900 text-[10px] px-1.5 py-0.5 rounded-full">{trashItems.length}</span>}
                     </button>
                  </div>
-                 <button onClick={() => loadData(300)} className="p-2 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-lg text-gray-500 hover:text-ms-blue transition-colors shadow-sm">
-                    <RefreshCw size={20} />
+                 <button onClick={() => loadData(300)} className="p-2 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-lg text-gray-500 hover:text-ms-blue transition-colors shadow-sm" disabled={loading}>
+                    <RefreshCw size={20} className={loading ? "animate-spin text-ms-blue" : ""} />
                 </button>
             </div>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">Total Views</p>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{stats?.totalViews}</p>
-              </div>
-              <div className="p-3 rounded-full bg-blue-50 text-ms-blue dark:bg-blue-900/50 dark:text-blue-300">
-                <Eye className="w-6 h-6" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">Content Items</p>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{(articles.length + caseStudies.length)}</p>
-              </div>
-              <div className="p-3 rounded-full bg-purple-50 text-purple-600 dark:bg-purple-900/50 dark:text-purple-300">
-                <FileText className="w-6 h-6" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">Activity Logs</p>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{logs.length}</p>
-              </div>
-              <div className="p-3 rounded-full bg-orange-50 text-orange-600 dark:bg-orange-900/50 dark:text-orange-300">
-                <Activity className="w-6 h-6" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">Storage Used</p>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{((stats?.storageUsedBytes || 0) / 1024).toFixed(2)} KB</p>
-              </div>
-              <div className="p-3 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-300">
-                <Database className="w-6 h-6" />
-              </div>
-            </div>
-             {/* Progress Bar for Storage */}
-            <div className="mt-4 w-full bg-gray-200 dark:bg-slate-800 rounded-full h-1.5">
-                <div 
-                    className="bg-emerald-500 h-1.5 rounded-full" 
-                    style={{ width: `${Math.min(((stats?.storageUsedBytes || 0) / (stats?.storageQuotaBytes || 1)) * 100, 100)}%` }}
-                ></div>
-            </div>
-          </div>
+          {[
+             { title: "Total Views", icon: <Eye className="w-6 h-6" />, color: "blue", value: stats?.totalViews },
+             { title: "Content Items", icon: <FileText className="w-6 h-6" />, color: "purple", value: (articles.length + caseStudies.length) },
+             { title: "Activity Logs", icon: <Activity className="w-6 h-6" />, color: "orange", value: logs.length },
+             { title: "Storage Used", icon: <Database className="w-6 h-6" />, color: "emerald", value: `${((stats?.storageUsedBytes || 0) / 1024).toFixed(2)} KB` }
+          ].map((item, idx) => (
+             loading ? (
+                <div key={idx} className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-slate-800 animate-pulse">
+                   <div className="flex justify-between items-start">
+                      <div className="space-y-3">
+                         <div className="h-4 w-20 bg-gray-200 dark:bg-slate-800 rounded" />
+                         <div className="h-8 w-12 bg-gray-200 dark:bg-slate-800 rounded" />
+                      </div>
+                      <div className="h-12 w-12 bg-gray-200 dark:bg-slate-800 rounded-full" />
+                   </div>
+                </div>
+             ) : (
+                <div key={idx} className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
+                    <div className="flex items-center justify-between">
+                    <div>
+                        <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">{item.title}</p>
+                        <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{item.value}</p>
+                    </div>
+                    <div className={`p-3 rounded-full ${
+                        item.color === 'blue' ? 'bg-blue-50 text-ms-blue dark:bg-blue-900/50 dark:text-blue-300' :
+                        item.color === 'purple' ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/50 dark:text-purple-300' :
+                        item.color === 'orange' ? 'bg-orange-50 text-orange-600 dark:bg-orange-900/50 dark:text-orange-300' :
+                        'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-300'
+                    }`}>
+                        {item.icon}
+                    </div>
+                    </div>
+                    {item.title === "Storage Used" && (
+                         <div className="mt-4 w-full bg-gray-200 dark:bg-slate-800 rounded-full h-1.5">
+                            <div 
+                                className="bg-emerald-500 h-1.5 rounded-full" 
+                                style={{ width: `${Math.min(((stats?.storageUsedBytes || 0) / (stats?.storageQuotaBytes || 1)) * 100, 100)}%` }}
+                            ></div>
+                        </div>
+                    )}
+                </div>
+             )
+          ))}
         </div>
 
         {/* Views: Active Content vs Trash */}
@@ -191,12 +169,20 @@ const Dashboard: React.FC = () => {
         <>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
                 {/* Analytics Chart */}
-                <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-slate-800">
+                <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-slate-800 min-h-[360px]">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
                         <Activity className="w-5 h-5 text-ms-blue" /> Traffic Overview
                     </h2>
                     <div className="h-72 w-full">
-                        {analyticsData.length > 0 ? (
+                        {loading ? (
+                            <div className="w-full h-full bg-gray-100 dark:bg-slate-800 animate-pulse rounded-lg flex items-end justify-between p-4 gap-2">
+                                <div className="w-1/6 h-1/3 bg-gray-200 dark:bg-slate-700 rounded-t" />
+                                <div className="w-1/6 h-2/3 bg-gray-200 dark:bg-slate-700 rounded-t" />
+                                <div className="w-1/6 h-1/2 bg-gray-200 dark:bg-slate-700 rounded-t" />
+                                <div className="w-1/6 h-3/4 bg-gray-200 dark:bg-slate-700 rounded-t" />
+                                <div className="w-1/6 h-2/5 bg-gray-200 dark:bg-slate-700 rounded-t" />
+                            </div>
+                        ) : analyticsData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={analyticsData}>
                                 <defs>
@@ -244,51 +230,67 @@ const Dashboard: React.FC = () => {
                 </div>
 
                 {/* Activity Log */}
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-slate-800">
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-slate-800 min-h-[360px]">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-6">Recent Activity</h2>
                     <div className="flow-root">
-                        <ul className="-mb-8">
-                            {logs.slice(0, 5).map((log, idx) => (
-                                <li key={log.id}>
-                                    <div className="relative pb-8">
-                                        {idx !== 4 && <span className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-slate-800" aria-hidden="true" />}
-                                        <div className="relative flex space-x-3">
-                                            <div>
-                                                <span className={`h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white dark:ring-slate-900 shadow-sm ${
-                                                    log.action === 'CREATE' ? 'bg-green-100 text-green-600' :
-                                                    log.action === 'DELETE' ? 'bg-red-100 text-red-600' :
-                                                    log.action === 'RESTORE' ? 'bg-purple-100 text-purple-600' :
-                                                    'bg-blue-100 text-blue-600'
-                                                }`}>
-                                                    {log.action === 'CREATE' ? <Plus size={14} /> : 
-                                                     log.action === 'DELETE' ? <Trash2 size={14} /> :
-                                                     log.action === 'RESTORE' ? <RotateCcw size={14} /> : 
-                                                     <Edit size={14} />}
-                                                </span>
+                        {loading ? (
+                             <ul className="-mb-8">
+                                {[1, 2, 3, 4].map(i => (
+                                    <li key={i} className="pb-8">
+                                        <div className="flex space-x-3">
+                                            <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-slate-800 animate-pulse" />
+                                            <div className="flex-1 space-y-2 py-1">
+                                                <div className="h-3 w-3/4 bg-gray-200 dark:bg-slate-800 animate-pulse rounded" />
+                                                <div className="h-3 w-1/2 bg-gray-200 dark:bg-slate-800 animate-pulse rounded" />
                                             </div>
-                                            <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                        </div>
+                                    </li>
+                                ))}
+                             </ul>
+                        ) : (
+                            <ul className="-mb-8">
+                                {logs.slice(0, 5).map((log, idx) => (
+                                    <li key={log.id}>
+                                        <div className="relative pb-8">
+                                            {idx !== 4 && <span className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-slate-800" aria-hidden="true" />}
+                                            <div className="relative flex space-x-3">
                                                 <div>
-                                                    <p className="text-sm text-slate-900 dark:text-gray-200 font-bold">
-                                                        {log.action} <span className="text-gray-500 font-normal">{log.entityType.toLowerCase()}</span>
-                                                    </p>
-                                                    <p className="text-xs text-gray-500 font-medium">{log.entityTitle}</p>
+                                                    <span className={`h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white dark:ring-slate-900 shadow-sm ${
+                                                        log.action === 'CREATE' ? 'bg-green-100 text-green-600' :
+                                                        log.action === 'DELETE' ? 'bg-red-100 text-red-600' :
+                                                        log.action === 'RESTORE' ? 'bg-purple-100 text-purple-600' :
+                                                        'bg-blue-100 text-blue-600'
+                                                    }`}>
+                                                        {log.action === 'CREATE' ? <Plus size={14} /> : 
+                                                        log.action === 'DELETE' ? <Trash2 size={14} /> :
+                                                        log.action === 'RESTORE' ? <RotateCcw size={14} /> : 
+                                                        <Edit size={14} />}
+                                                    </span>
                                                 </div>
-                                                <div className="text-right text-xs whitespace-nowrap text-gray-400">
-                                                    <time>{new Date(log.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</time>
+                                                <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                                    <div>
+                                                        <p className="text-sm text-slate-900 dark:text-gray-200 font-bold">
+                                                            {log.action} <span className="text-gray-500 font-normal">{log.entityType.toLowerCase()}</span>
+                                                        </p>
+                                                        <p className="text-xs text-gray-500 font-medium">{log.entityTitle}</p>
+                                                    </div>
+                                                    <div className="text-right text-xs whitespace-nowrap text-gray-400">
+                                                        <time>{new Date(log.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</time>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Articles List */}
-                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-gray-200 dark:border-slate-800 overflow-hidden">
+                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-gray-200 dark:border-slate-800 overflow-hidden min-h-[300px]">
                     <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-800 flex justify-between items-center bg-gray-50 dark:bg-slate-800/30">
                         <h2 className="text-lg font-bold text-slate-900 dark:text-white">Articles</h2>
                         <Link to="/admin/article/new" className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-bold rounded-lg text-white bg-ms-blue hover:bg-blue-700 transition-colors shadow-sm transform hover:-translate-y-0.5">
@@ -296,31 +298,43 @@ const Dashboard: React.FC = () => {
                         </Link>
                     </div>
                     <ul className="divide-y divide-gray-100 dark:divide-slate-800 max-h-[400px] overflow-y-auto">
-                        {articles.length === 0 && <li className="p-6 text-center text-gray-500">No articles found.</li>}
-                        {articles.map(article => (
-                        <li key={article.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors group">
-                            <div className="min-w-0 flex-1">
-                                <p className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-ms-blue transition-colors">{article.title}</p>
-                                <div className="flex items-center mt-1">
-                                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold shadow-sm ${
-                                        article.status === ContentStatus.Published ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-800'
-                                    }`}>
-                                        {article.status}
-                                    </span>
-                                    <span className="text-xs text-gray-400 ml-2 font-medium">{article.date}</span>
+                        {loading ? (
+                            [1, 2, 3].map(i => (
+                                <li key={i} className="px-6 py-4 flex items-center">
+                                    <div className="flex-1 space-y-2">
+                                        <div className="h-4 w-3/4 bg-gray-200 dark:bg-slate-800 animate-pulse rounded" />
+                                        <div className="h-3 w-1/4 bg-gray-200 dark:bg-slate-800 animate-pulse rounded" />
+                                    </div>
+                                </li>
+                            ))
+                        ) : articles.length === 0 ? (
+                            <li className="p-6 text-center text-gray-500">No articles found.</li>
+                        ) : (
+                            articles.map(article => (
+                            <li key={article.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors group">
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-ms-blue transition-colors">{article.title}</p>
+                                    <div className="flex items-center mt-1">
+                                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold shadow-sm ${
+                                            article.status === ContentStatus.Published ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-800'
+                                        }`}>
+                                            {article.status}
+                                        </span>
+                                        <span className="text-xs text-gray-400 ml-2 font-medium">{article.date}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="flex items-center gap-2 ml-4 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onClick={() => navigate(`/admin/article/edit/${article.id}`)} className="p-2 text-gray-500 hover:text-ms-blue hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors border border-gray-200 dark:border-slate-700"><Edit className="w-4 h-4" /></button>
-                                <button onClick={() => handleDelete(ContentType.Article, article.id)} className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors border border-gray-200 dark:border-slate-700"><Trash2 className="w-4 h-4" /></button>
-                            </div>
-                        </li>
-                        ))}
+                                <div className="flex items-center gap-2 ml-4 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button onClick={() => navigate(`/admin/article/edit/${article.id}`)} className="p-2 text-gray-500 hover:text-ms-blue hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors border border-gray-200 dark:border-slate-700"><Edit className="w-4 h-4" /></button>
+                                    <button onClick={() => handleDelete(ContentType.Article, article.id)} className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors border border-gray-200 dark:border-slate-700"><Trash2 className="w-4 h-4" /></button>
+                                </div>
+                            </li>
+                            ))
+                        )}
                     </ul>
                 </div>
 
                 {/* Case Studies List */}
-                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-gray-200 dark:border-slate-800 overflow-hidden">
+                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-gray-200 dark:border-slate-800 overflow-hidden min-h-[300px]">
                     <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-800 flex justify-between items-center bg-gray-50 dark:bg-slate-800/30">
                         <h2 className="text-lg font-bold text-slate-900 dark:text-white">Case Studies</h2>
                         <Link to="/admin/casestudy/new" className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-bold rounded-lg text-white bg-ms-blue hover:bg-blue-700 transition-colors shadow-sm transform hover:-translate-y-0.5">
@@ -328,22 +342,34 @@ const Dashboard: React.FC = () => {
                         </Link>
                     </div>
                     <ul className="divide-y divide-gray-100 dark:divide-slate-800 max-h-[400px] overflow-y-auto">
-                         {caseStudies.length === 0 && <li className="p-6 text-center text-gray-500">No case studies found.</li>}
-                        {caseStudies.map(study => (
-                        <li key={study.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors group">
-                            <div className="min-w-0 flex-1">
-                                <p className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-ms-blue transition-colors">{study.title}</p>
-                                <p className="text-xs text-gray-500 mt-1 flex items-center font-medium">
-                                    <Briefcase className="w-3 h-3 mr-1" />
-                                    {study.client}
-                                </p>
-                            </div>
-                            <div className="flex items-center gap-2 ml-4 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onClick={() => navigate(`/admin/casestudy/edit/${study.id}`)} className="p-2 text-gray-500 hover:text-ms-blue hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors border border-gray-200 dark:border-slate-700"><Edit className="w-4 h-4" /></button>
-                                <button onClick={() => handleDelete(ContentType.CaseStudy, study.id)} className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors border border-gray-200 dark:border-slate-700"><Trash2 className="w-4 h-4" /></button>
-                            </div>
-                        </li>
-                        ))}
+                        {loading ? (
+                            [1, 2, 3].map(i => (
+                                <li key={i} className="px-6 py-4 flex items-center">
+                                    <div className="flex-1 space-y-2">
+                                        <div className="h-4 w-3/4 bg-gray-200 dark:bg-slate-800 animate-pulse rounded" />
+                                        <div className="h-3 w-1/3 bg-gray-200 dark:bg-slate-800 animate-pulse rounded" />
+                                    </div>
+                                </li>
+                            ))
+                         ) : caseStudies.length === 0 ? (
+                            <li className="p-6 text-center text-gray-500">No case studies found.</li>
+                        ) : (
+                            caseStudies.map(study => (
+                            <li key={study.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors group">
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-ms-blue transition-colors">{study.title}</p>
+                                    <p className="text-xs text-gray-500 mt-1 flex items-center font-medium">
+                                        <Briefcase className="w-3 h-3 mr-1" />
+                                        {study.client}
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-2 ml-4 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button onClick={() => navigate(`/admin/casestudy/edit/${study.id}`)} className="p-2 text-gray-500 hover:text-ms-blue hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors border border-gray-200 dark:border-slate-700"><Edit className="w-4 h-4" /></button>
+                                    <button onClick={() => handleDelete(ContentType.CaseStudy, study.id)} className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors border border-gray-200 dark:border-slate-700"><Trash2 className="w-4 h-4" /></button>
+                                </div>
+                            </li>
+                            ))
+                        )}
                     </ul>
                 </div>
             </div>
