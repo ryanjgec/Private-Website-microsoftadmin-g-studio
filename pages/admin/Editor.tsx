@@ -234,31 +234,31 @@ const Editor: React.FC<EditorProps> = ({ type }) => {
              <label className="block text-sm font-bold text-slate-900 dark:text-gray-300 mb-2">Content (Markdown)</label>
              
              {/* Toolbar */}
-             <div className="flex flex-wrap items-center gap-1 p-2 bg-gray-100 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 border-b-0 rounded-t-lg">
-                <button type="button" onClick={() => insertFormat('**', '**')} className="p-1.5 rounded hover:bg-white dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Bold">
+             <div className="flex flex-wrap items-center gap-1 p-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 border-b-0 rounded-t-lg">
+                <button type="button" onClick={() => insertFormat('**', '**')} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Bold">
                    <Bold size={16} />
                 </button>
-                <button type="button" onClick={() => insertFormat('*', '*')} className="p-1.5 rounded hover:bg-white dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Italic">
+                <button type="button" onClick={() => insertFormat('*', '*')} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Italic">
                    <Italic size={16} />
                 </button>
                 <div className="w-px h-6 bg-gray-300 dark:bg-slate-600 mx-1"></div>
-                <button type="button" onClick={() => insertFormat('\n## ')} className="p-1.5 rounded hover:bg-white dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Heading 2">
+                <button type="button" onClick={() => insertFormat('\n## ')} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Heading 2">
                    <Heading size={16} />
                 </button>
-                <button type="button" onClick={() => insertFormat('\n> ')} className="p-1.5 rounded hover:bg-white dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Quote">
+                <button type="button" onClick={() => insertFormat('\n> ')} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Quote">
                    <Quote size={16} />
                 </button>
-                <button type="button" onClick={() => insertFormat('\n- ')} className="p-1.5 rounded hover:bg-white dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Bulleted List">
+                <button type="button" onClick={() => insertFormat('\n- ')} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Bulleted List">
                    <List size={16} />
                 </button>
-                <button type="button" onClick={() => insertFormat('\n1. ')} className="p-1.5 rounded hover:bg-white dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Numbered List">
+                <button type="button" onClick={() => insertFormat('\n1. ')} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Numbered List">
                    <ListOrdered size={16} />
                 </button>
                 <div className="w-px h-6 bg-gray-300 dark:bg-slate-600 mx-1"></div>
-                <button type="button" onClick={() => insertFormat('[', '](url)')} className="p-1.5 rounded hover:bg-white dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Link">
+                <button type="button" onClick={() => insertFormat('[', '](url)')} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Link">
                    <LinkIcon size={16} />
                 </button>
-                <button type="button" onClick={() => insertFormat('\n```\n', '\n```\n')} className="p-1.5 rounded hover:bg-white dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Code Block">
+                <button type="button" onClick={() => insertFormat('\n```\n', '\n```\n')} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 transition-colors" title="Code Block">
                    <Code size={16} />
                 </button>
                 

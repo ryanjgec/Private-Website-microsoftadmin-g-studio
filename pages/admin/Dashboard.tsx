@@ -20,8 +20,9 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
 
   const loadData = (delay = 400) => {
-    setLoading(true);
-    // Use timeout to simulate network if delay > 0
+    // We only set loading true on initial load, not on background refreshes
+    if (articles.length === 0) setLoading(true);
+    
     setTimeout(() => {
         setArticles(ContentService.getArticles());
         setCaseStudies(ContentService.getCaseStudies());
@@ -45,25 +46,40 @@ const Dashboard: React.FC = () => {
 
   const handleDelete = (type: ContentType, id: string) => {
     if (confirm('Are you sure you want to move this item to Trash?')) {
+       // 1. Optimistic UI Update (Remove immediately from view)
        if (type === ContentType.Article) {
+         setArticles(prev => prev.filter(a => a.id !== id));
          ContentService.deleteArticle(id);
        } else {
+         setCaseStudies(prev => prev.filter(c => c.id !== id));
          ContentService.deleteCaseStudy(id);
        }
-       // Reload data immediately without delay for snappy UX
-       loadData(0);
+       
+       // 2. Refresh Trash in background
+       setTrashItems(ContentService.getTrash());
+       setLogs(ContentService.getRecentActivity());
+       setStats(ContentService.getSystemStats());
     }
   };
 
   const handleRestore = (id: string) => {
+      // 1. Optimistic UI Update
+      setTrashItems(prev => prev.filter(t => t.id !== id));
+      
+      // 2. Perform Action
       ContentService.restoreItem(id);
-      loadData(0);
+      
+      // 3. Refresh Lists
+      setArticles(ContentService.getArticles());
+      setCaseStudies(ContentService.getCaseStudies());
+      setLogs(ContentService.getRecentActivity());
   };
 
   const handlePermanentDelete = (id: string) => {
       if (confirm('This action cannot be undone. Delete permanently?')) {
+          setTrashItems(prev => prev.filter(t => t.id !== id));
           ContentService.permanentDelete(id);
-          loadData(0);
+          setStats(ContentService.getSystemStats());
       }
   };
 
@@ -103,7 +119,7 @@ const Dashboard: React.FC = () => {
                         className={`px-4 py-1.5 text-sm font-bold rounded-md transition-colors flex items-center gap-2 ${viewMode === 'trash' ? 'bg-red-600 text-white shadow' : 'text-gray-600 dark:text-gray-400 hover:text-red-600'}`}
                     >
                         <Trash2 size={14} /> Trash
-                        {stats?.trashCount ? <span className="bg-red-100 text-red-800 dark:bg-red-900 text-[10px] px-1.5 py-0.5 rounded-full">{stats.trashCount}</span> : null}
+                        {trashItems.length > 0 && <span className="bg-red-100 text-red-800 dark:bg-red-900 text-[10px] px-1.5 py-0.5 rounded-full">{trashItems.length}</span>}
                     </button>
                  </div>
                  <button onClick={() => loadData(300)} className="p-2 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-lg text-gray-500 hover:text-ms-blue transition-colors shadow-sm">
@@ -130,7 +146,7 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">Content Items</p>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{(stats?.totalArticles || 0) + (stats?.totalCaseStudies || 0)}</p>
+                <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{(articles.length + caseStudies.length)}</p>
               </div>
               <div className="p-3 rounded-full bg-purple-50 text-purple-600 dark:bg-purple-900/50 dark:text-purple-300">
                 <FileText className="w-6 h-6" />

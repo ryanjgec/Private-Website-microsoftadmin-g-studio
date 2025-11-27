@@ -51,11 +51,11 @@ const CaseStudyDetail: React.FC = () => {
 
           <div className="flex flex-col sm:flex-row justify-center gap-6 text-left max-w-2xl mx-auto bg-slate-50 dark:bg-slate-800 p-6 rounded-xl border border-slate-100 dark:border-slate-700">
              <div className="flex-1">
-                <p className="text-sm text-slate-500 dark:text-gray-400 font-bold uppercase tracking-wide mb-1">Environment</p>
+                <p className="text-sm text-slate-700 dark:text-gray-400 font-bold uppercase tracking-wide mb-1">Environment</p>
                 <p className="text-slate-900 dark:text-white font-bold">{study.environment}</p>
              </div>
              <div className="flex-1 border-t sm:border-t-0 sm:border-l border-slate-200 dark:border-slate-700 pt-4 sm:pt-0 sm:pl-6">
-                <p className="text-sm text-slate-500 dark:text-gray-400 font-bold uppercase tracking-wide mb-1">Core Outcome</p>
+                <p className="text-sm text-slate-700 dark:text-gray-400 font-bold uppercase tracking-wide mb-1">Core Outcome</p>
                 <p className="text-emerald-700 dark:text-emerald-400 font-bold">{study.outcome}</p>
              </div>
           </div>

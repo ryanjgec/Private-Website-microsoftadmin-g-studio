@@ -50,7 +50,7 @@ const ArticleDetail: React.FC = () => {
           </h1>
           
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-gray-100 dark:border-slate-800">
-            <div className="flex items-center text-slate-600 dark:text-gray-400 text-sm font-medium">
+            <div className="flex items-center text-slate-700 dark:text-gray-400 text-sm font-medium">
               <Calendar className="w-4 h-4 mr-2" />
               <time>{article.date}</time>
             </div>
